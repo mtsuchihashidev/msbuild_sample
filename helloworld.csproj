@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<AssemblyName>helloworld</AssemblyName>
+	</PropertyGroup>
+	<!-- Releas以外はすべてDebugとする -->
+	<PropertyGroup>
+		<OutputPath>bin\Debug\</OutputPath>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+		<OutputPath>bin\Release\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="*.cs" />
+	</ItemGroup>
+
+	<!-- 正直、以下を書いておけばコンパイラの設定とかいらないかも -->
+	<!-- C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.CSharp.targets -->
+	<!-- <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /> -->
+
+	<Target Name="Build" Inputs="@(Compile)" Outputs="$(OutputPath)$(AssemblyName).exe" >
+		<Message text="DefineConstants: $(DefineConstants)" />
+		<Message text="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+		<MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+		<Message text="Create: $(OutputPath)$(AssemblyName).exe" />
+		<Csc
+			Sources="@(Compile)"
+			OutputAssembly="$(OutputPath)$(AssemblyName).exe"
+			DefineConstants="$(DefineConstants)"
+		/>
+	</Target>
+	<Target Name="Clean">
+		<Delete Files="$(OutputPath)$(AssemblyName).exe" />
+	</Target>
+	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project>
